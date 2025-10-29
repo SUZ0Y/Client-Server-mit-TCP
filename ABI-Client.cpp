@@ -6,8 +6,8 @@
 using namespace std;
 
 // Zieladresse des Servers
-constexpr int SERVER_PORT = 5586;		// Konstante für den Server-Port - zentraler Ort fuer die Port-Nummer
-constexpr auto SERVER_IP = "127.0.0.1";  // Konstante für den IP-Adresse
+constexpr int SERVER_PORT = 5586;		// Konstante fï¿½r den Server-Port - zentraler Ort fuer die Port-Nummer
+constexpr auto SERVER_IP = "127.0.0.1";  // Konstante fï¿½r den IP-Adresse
 
 int main()
 {
@@ -41,8 +41,17 @@ int main()
 	// 4) Eingabe-Schleife: Benutzer schickt Anfragen an den Server
 	string befehl = "";
 
-	cout << "\n> ";
+	bool client_laeuft = true;
+
+	while (client_laeuft)
+	{
+		cout << "\n> ";
 	std::getline(cin, befehl); // ganze Zeile einlesen
+		if (befehl.empty()) {
+			continue;
+		}
+
+	
 
 	// Anfrage an den Server schicken 
 	client.write(befehl);
@@ -51,13 +60,22 @@ int main()
 	if (befehl == "EXIT")
 	{
 		cout << "Verbindung wird beendet..." << endl;
-		client.close();
+		//client.close();
+		client_laeuft = false;
 		return 0;
 	}
 
 	// 5) Antwort vom Server lesen (bis '\n')
 	string antwort = client.readLine();
+
+	if (antwort.empty()) {
+		cout << "Fehler: Keine Antwort vom Server. Verbindung beendet." << endl;
+		client_laeuft = false;
+		return 0;
+	}
 	cout << "< " << antwort << endl;
+
+}
 
 	// 6) Verbindung sauber beenden
 	client.close();
